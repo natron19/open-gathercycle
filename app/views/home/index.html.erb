@@ -1,0 +1,64 @@
+<%# Hero %>
+<div class="text-center py-5">
+  <h1 class="display-4 fw-bold mb-3"><%= ENV.fetch("APP_NAME", "GatherCycle Demo") %></h1>
+  <p class="lead mb-2" style="color: var(--accent)"><%= ENV.fetch("APP_TAGLINE", "") %></p>
+  <p class="text-muted col-md-7 mx-auto mb-4"><%= ENV.fetch("APP_DESCRIPTION", "") %></p>
+  <div class="d-flex justify-content-center gap-3">
+    <% if signed_in? %>
+      <%= link_to "My Cycles", "/growth_cycles", class: "btn btn-accent btn-lg" %>
+    <% else %>
+      <%= link_to "Sign up free", sign_up_path, class: "btn btn-accent btn-lg" %>
+      <%= link_to "Sign in", sign_in_path, class: "btn btn-outline-secondary btn-lg" %>
+    <% end %>
+  </div>
+</div>
+
+<%# How it works %>
+<div class="py-5">
+  <h2 class="text-center fw-semibold mb-5">How it works</h2>
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="card h-100 border-0 bg-body-secondary">
+        <div class="card-body py-4">
+          <div class="fs-1 fw-bold mb-3" style="color: var(--accent)">1</div>
+          <h5 class="card-title fw-semibold">Describe your goal</h5>
+          <p class="card-text text-muted">
+            Enter your organization name, time period, growth target (number + metric), and a brief description of your community or audience.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 border-0 bg-body-secondary">
+        <div class="card-body py-4">
+          <div class="fs-1 fw-bold mb-3" style="color: var(--accent)">2</div>
+          <h5 class="card-title fw-semibold">Gemini builds your plan</h5>
+          <p class="card-text text-muted">
+            One structured AI call returns a complete three-phase cycle — Awareness, Engagement, and Consolidation — with 3–4 tasks per phase, each tagged with an owner type and effort estimate.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 border-0 bg-body-secondary">
+        <div class="card-body py-4">
+          <div class="fs-1 fw-bold mb-3" style="color: var(--accent)">3</div>
+          <h5 class="card-title fw-semibold">Assign and track tasks</h5>
+          <p class="card-text text-muted">
+            Tasks are saved to the database with suggested owner types (leader, volunteer, or staff) and measurable success indicators. Check them off as your team completes them.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# Open source note %>
+<div class="py-4 border-top text-center text-muted">
+  <p class="mb-1">
+    Open source under the <strong>MIT license</strong>. Clone it, run it locally, read exactly how the prompt engineering and JSON parsing work.
+  </p>
+  <p class="small">
+    Built on <a href="https://github.com/your-handle/open-base" class="text-muted">Open Demo Starter</a> — a Rails 8 + Gemini boilerplate.
+  </p>
+</div>

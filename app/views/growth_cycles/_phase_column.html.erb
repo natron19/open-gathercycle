@@ -1,0 +1,19 @@
+<div class="card h-100">
+  <div class="card-header phase-header-<%= phase_name %>">
+    <h6 class="mb-1 fw-semibold"><%= phase_label %></h6>
+    <small class="text-muted"><%= objective %></small>
+  </div>
+  <div class="card-body p-0">
+    <% if tasks.empty? %>
+      <p class="text-muted small p-3 mb-0">No tasks yet.</p>
+    <% else %>
+      <ul class="list-group list-group-flush">
+        <% tasks.each do |task| %>
+          <li class="list-group-item">
+            <%= render "task_item", task: task, growth_cycle: @cycle %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<%= form_with model: @cycle, data: { controller: "generate-form", action: "submit->generate-form#submit" } do |f| %>
+  <% if @cycle.errors.any? %>
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        <% @cycle.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :organization_name, class: "form-label" %>
+    <%= f.text_field :organization_name, class: "form-control #{"is-invalid" if @cycle.errors[:organization_name].any?}" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-control #{"is-invalid" if @cycle.errors[:name].any?}",
+          placeholder: "Give this cycle a short label" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :time_period, class: "form-label" %>
+    <%= f.text_field :time_period, class: "form-control #{"is-invalid" if @cycle.errors[:time_period].any?}",
+          placeholder: "e.g., Q2 2026, Fall 2026" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :goal_description, class: "form-label" %>
+    <%= f.text_field :goal_description, class: "form-control #{"is-invalid" if @cycle.errors[:goal_description].any?}",
+          placeholder: "e.g., Grow paid membership by 40% in 90 days" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :audience_description, class: "form-label" %>
+    <%= f.text_area :audience_description, rows: 4,
+          class: "form-control #{"is-invalid" if @cycle.errors[:audience_description].any?}",
+          placeholder: "Describe your community — who they are, what they care about, how active they are" %>
+  </div>
+
+  <div class="d-flex align-items-center gap-3">
+    <%= f.submit "Generate My Cycle Plan",
+          class: "btn btn-accent",
+          data: { "generate-form-target": "button" } %>
+    <div class="d-flex align-items-center gap-2 d-none" data-generate-form-target="spinner">
+      <div class="spinner-border spinner-border-sm text-light" role="status">
+        <span class="visually-hidden">Generating...</span>
+      </div>
+      <span class="text-muted small">Generating your plan&hellip;</span>
+    </div>
+    <%= link_to "Cancel", growth_cycles_path, class: "btn btn-outline-secondary ms-auto" %>
+  </div>
+<% end %>

@@ -1,0 +1,13 @@
+<div class="text-center py-5">
+  <h2 class="fw-semibold mb-2">Welcome, <%= current_user.first_name %>!</h2>
+  <p class="text-muted mb-4">Ready to build your first growth cycle plan?</p>
+  <div class="card col-md-6 mx-auto border-0 bg-body-secondary">
+    <div class="card-body py-4">
+      <h5 class="card-title fw-semibold mb-3">No cycles yet</h5>
+      <p class="card-text text-muted mb-4">
+        Enter your organization's goal and audience — Gemini will generate a structured three-phase plan with distributed tasks and measurable success indicators.
+      </p>
+      <%= link_to "Create Your First Cycle", new_growth_cycle_path, class: "btn btn-accent" %>
+    </div>
+  </div>
+</div>
