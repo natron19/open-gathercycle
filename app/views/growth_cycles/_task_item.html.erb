@@ -1,32 +1,40 @@
 <%= turbo_frame_tag dom_id(task) do %>
-  <%= form_with url: toggle_growth_cycle_cycle_task_path(growth_cycle, task), method: :patch,
-        data: { controller: "checkbox-submit" } do %>
-    <div class="d-flex align-items-start gap-2">
-      <input type="checkbox"
-             class="form-check-input mt-1 flex-shrink-0"
-             <%= task.completed ? "checked" : "" %>
-             data-action="change->checkbox-submit#submit">
+  <div class="d-flex align-items-start gap-2">
+    <%= form_with url: toggle_growth_cycle_cycle_task_path(growth_cycle, task), method: :patch,
+          data: { controller: "checkbox-submit" }, class: "flex-grow-1" do %>
+      <div class="d-flex align-items-start gap-2">
+        <input type="checkbox"
+               class="form-check-input mt-1 flex-shrink-0"
+               <%= task.completed ? "checked" : "" %>
+               data-action="change->checkbox-submit#submit">
 
-      <div class="flex-grow-1">
-        <span class="<%= "text-decoration-line-through text-muted" if task.completed %>">
-          <%= task.title %>
-        </span>
+        <div class="flex-grow-1">
+          <span class="<%= "text-decoration-line-through text-muted" if task.completed %>">
+            <%= task.title %>
+          </span>
 
-        <%
-          badge_html = case task.owner_type
-                       when "leader"    then "<span class=\"badge badge-leader\">Leader</span>"
-                       when "volunteer" then "<span class=\"badge bg-success\">Volunteer</span>"
-                       when "staff"     then "<span class=\"badge bg-info text-dark\">Staff</span>"
-                       end
-        %>
-        <%= badge_html.html_safe %>
+          <%
+            badge_html = case task.owner_type
+                         when "leader"    then "<span class=\"badge badge-leader\">Leader</span>"
+                         when "volunteer" then "<span class=\"badge bg-success\">Volunteer</span>"
+                         when "staff"     then "<span class=\"badge bg-info text-dark\">Staff</span>"
+                         end
+          %>
+          <%= badge_html.html_safe %>
 
-        <div class="small text-muted mt-1">
-          <span><%= task.effort_estimate %></span>
-          <span class="mx-1">&middot;</span>
-          <span><%= task.success_indicator %></span>
+          <div class="small text-muted mt-1">
+            <span><%= task.effort_estimate %></span>
+            <span class="mx-1">&middot;</span>
+            <span><%= task.success_indicator %></span>
+          </div>
         </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+
+    <%= button_to "&times;".html_safe,
+          growth_cycle_cycle_task_path(growth_cycle, task),
+          method: :delete,
+          class: "btn btn-sm btn-link text-danger p-0 flex-shrink-0",
+          form: { class: "d-inline", data: { turbo_confirm: "Remove \"#{task.title}\"?" } } %>
+  </div>
 <% end %>

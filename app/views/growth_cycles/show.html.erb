@@ -22,7 +22,9 @@
       <p class="text-muted mb-1"><strong><%= @cycle.organization_name %></strong> &middot; <%= @cycle.time_period %></p>
       <p class="mb-0"><%= @cycle.goal_description %></p>
     </div>
-    <div class="col-auto d-flex align-items-start">
+    <div class="col-auto d-flex align-items-start gap-2">
+      <%= link_to "Download Markdown", download_growth_cycle_path(@cycle),
+            class: "btn btn-outline-secondary btn-sm" %>
       <%= link_to "Delete Cycle", growth_cycle_path(@cycle),
             data: { turbo_method: :delete, turbo_confirm: "Delete \"#{@cycle.name}\"? This cannot be undone." },
             class: "btn btn-outline-danger btn-sm" %>

@@ -71,6 +71,13 @@ class GrowthCyclesController < ApplicationController
     @phases = @cycle.cycle_tasks.order(:position).group_by(&:phase)
   end
 
+  def download
+    @cycle = current_user.growth_cycles.find(params[:id])
+    phases = @cycle.cycle_tasks.order(:position).group_by(&:phase)
+    filename = "#{@cycle.name.parameterize}-#{@cycle.time_period.parameterize}.md"
+    send_data markdown_for(@cycle, phases), filename: filename, type: "text/plain", disposition: "attachment"
+  end
+
   def destroy
     cycle = current_user.growth_cycles.find(params[:id])
     cycle.destroy!
@@ -78,6 +85,43 @@ class GrowthCyclesController < ApplicationController
   end
 
   private
+
+  PHASE_ORDER  = %w[awareness engagement consolidation].freeze
+  PHASE_LABELS = {
+    "awareness"     => "Phase 1: Awareness",
+    "engagement"    => "Phase 2: Engagement",
+    "consolidation" => "Phase 3: Consolidation"
+  }.freeze
+
+  def markdown_for(cycle, phases)
+    lines = []
+    lines << "# #{cycle.name}"
+    lines << ""
+    lines << "| | |"
+    lines << "|---|---|"
+    lines << "| **Organization** | #{cycle.organization_name} |"
+    lines << "| **Period** | #{cycle.time_period} |"
+    lines << "| **Goal** | #{cycle.goal_description} |"
+    lines << "| **Audience** | #{cycle.audience_description} |"
+    lines << ""
+
+    PHASE_ORDER.each do |phase_name|
+      tasks = phases[phase_name] || []
+      next if tasks.empty?
+
+      lines << "## #{PHASE_LABELS[phase_name]}"
+      lines << ""
+      tasks.each do |task|
+        check = task.completed ? "x" : " "
+        lines << "- [#{check}] **#{task.title}**"
+        lines << "  - *Owner:* #{task.owner_type}  ·  *Effort:* #{task.effort_estimate}"
+        lines << "  - *Success indicator:* #{task.success_indicator}"
+        lines << ""
+      end
+    end
+
+    lines.join("\n")
+  end
 
   def growth_cycle_params
     params.require(:growth_cycle).permit(:organization_name, :name, :time_period, :goal_description, :audience_description)

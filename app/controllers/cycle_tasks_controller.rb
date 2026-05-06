@@ -12,4 +12,12 @@ class CycleTasksController < ApplicationController
       locals:  { task: task, growth_cycle: growth_cycle }
     )
   end
+
+  def destroy
+    growth_cycle = current_user.growth_cycles.find(params[:growth_cycle_id])
+    task = growth_cycle.cycle_tasks.find(params[:id])
+    task.destroy!
+
+    render turbo_stream: turbo_stream.remove(dom_id(task))
+  end
 end

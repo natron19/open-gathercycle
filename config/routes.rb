@@ -15,7 +15,8 @@ Rails.application.routes.draw do
   patch "/passwords/:token", to: "passwords#update"
 
   resources :growth_cycles, only: [:index, :new, :create, :show, :destroy] do
-    resources :cycle_tasks, only: [] do
+    member { get :download }
+    resources :cycle_tasks, only: [:destroy] do
       member { patch :toggle }
     end
   end

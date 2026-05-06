@@ -111,6 +111,49 @@ RSpec.describe "GrowthCycles", type: :request do
     end
   end
 
+  describe "GET /growth_cycles/:id/download" do
+    let!(:task) { create(:cycle_task, growth_cycle: cycle, phase: "awareness", title: "Run a photo series") }
+
+    it "redirects unauthenticated users to sign in" do
+      get download_growth_cycle_path(cycle)
+      expect(response).to redirect_to(sign_in_path)
+    end
+
+    context "authenticated as owner" do
+      before { sign_in_as(user) }
+
+      it "returns a file attachment with text/plain content type" do
+        get download_growth_cycle_path(cycle)
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type).to include("text/plain")
+        expect(response.headers["Content-Disposition"]).to include("attachment")
+      end
+
+      it "includes the cycle name and task title in the markdown body" do
+        get download_growth_cycle_path(cycle)
+        expect(response.body).to include(cycle.name)
+        expect(response.body).to include("Phase 1: Awareness")
+        expect(response.body).to include(task.title)
+      end
+
+      it "marks completed tasks with [x] and incomplete with [ ]" do
+        completed_task = create(:cycle_task, :completed, growth_cycle: cycle, phase: "engagement", title: "Done task")
+        get download_growth_cycle_path(cycle)
+        expect(response.body).to include("- [ ] **#{task.title}**")
+        expect(response.body).to include("- [x] **#{completed_task.title}**")
+      end
+    end
+
+    context "authenticated as a different user" do
+      before { sign_in_as(other) }
+
+      it "redirects (record not found)" do
+        get download_growth_cycle_path(cycle)
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
   describe "DELETE /growth_cycles/:id" do
     it "destroys the cycle and its tasks and redirects" do
       cycle_with_tasks = create(:growth_cycle, :with_tasks, user: user)

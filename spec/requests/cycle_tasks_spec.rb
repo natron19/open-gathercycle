@@ -55,4 +55,44 @@ RSpec.describe "CycleTasks", type: :request do
       end
     end
   end
+
+  describe "DELETE destroy" do
+    def destroy_path
+      growth_cycle_cycle_task_path(cycle, task)
+    end
+
+    context "unauthenticated" do
+      it "redirects to sign in" do
+        delete destroy_path
+        expect(response).to redirect_to(sign_in_path)
+      end
+    end
+
+    context "authenticated as owner" do
+      before { sign_in_as(user) }
+
+      it "destroys the task and returns a turbo-stream remove action" do
+        task_id = task.id
+        expect {
+          delete destroy_path
+        }.to change(CycleTask, :count).by(-1)
+
+        expect(CycleTask.find_by(id: task_id)).to be_nil
+        expect(response.content_type).to include("text/vnd.turbo-stream.html")
+        expect(response.body).to include("turbo-stream")
+        expect(response.body).to include(ActionView::RecordIdentifier.dom_id(task))
+      end
+    end
+
+    context "authenticated as a different user" do
+      before { sign_in_as(other_user) }
+
+      it "redirects (record not found) and does not destroy the task" do
+        task_id = task.id
+        delete destroy_path
+        expect(response).to redirect_to(root_path)
+        expect(CycleTask.find_by(id: task_id)).to be_present
+      end
+    end
+  end
 end

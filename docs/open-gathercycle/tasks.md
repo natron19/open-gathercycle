@@ -595,10 +595,10 @@ Final verification before the repo is ready to share:
 
 - [x] All phases marked complete above (implementation tasks done; remaining unchecked items are manual smoke tests)
 - [x] `bundle exec rspec` passes with 0 failures
-- [ ] App boots cleanly from a fresh `bin/setup` and `rails db:seed`
-- [ ] Both sample cycles are visible at `/growth_cycles` after seeding
+- [x] App boots cleanly from a fresh `bin/setup` and `rails db:seed`
+- [x] Both sample cycles are visible at `/growth_cycles` after seeding
 - [x] Gemini plan generation works end-to-end with a valid API key
-- [ ] Admin template test panel works for `gathercycle_plan_v1`
+- [x] Admin template test panel works for `gathercycle_plan_v1`
 - [x] `README.md` updated with GatherCycle Demo section
 - [x] `.env.example` has all GatherCycle values set (no real secrets)
 - [x] `config/master.key` is gitignored (`/config/*.key` in .gitignore)
