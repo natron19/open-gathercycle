@@ -1,0 +1,15 @@
+# Per-app guardrail configuration, read by AiGuardConfig.
+# See docs/ai-guardrails.md (Layer 1b: AiOutputGuard) and docs/ai-evals.md.
+
+# Community growth planning; personal distress is out of scope.
+crisis_terms: []
+
+# gathercycle_plan_v1: GrowthCyclesController parses the JSON and iterates
+# parsed["phases"] to create CycleTasks. cycle_summary is never read, so only
+# phases is required.
+templates:
+  health_ping:
+    format: text
+  gathercycle_plan_v1:
+    format: json
+    required_keys: [phases]
