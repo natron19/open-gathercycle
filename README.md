@@ -133,7 +133,7 @@ This project is open source and we want it to be useful to real people. Contribu
 
 ## Built On
 
-This app is built on [Open Demo Starter](https://github.com/your-handle/open-base), a minimal Rails 8 + Gemini boilerplate for single-purpose demo apps. The auth system, admin panel, AI service layer, and guardrails are from the boilerplate and are not modified here.
+This app is built on [Open Demo Starter](https://github.com/natron19/open-base), a minimal Rails 8 + Gemini boilerplate for single-purpose demo apps. The auth system, admin panel, AI service layer, and guardrails are from the boilerplate and are not modified here.
 
 ## License
 
