@@ -62,6 +62,13 @@ class GeminiService
 
     begin
       response_text, prompt_tokens, response_tokens = call_gemini(ai_template, rendered_prompt)
+      # Gemini occasionally drops a brace or bracket even in JSON mode. One retry is cheaper
+      # than showing the user an error; both calls are counted in the log.
+      if unparseable_json?(ai_template, response_text)
+        response_text, retry_prompt_tokens, retry_response_tokens = call_gemini(ai_template, rendered_prompt)
+        prompt_tokens   += retry_prompt_tokens
+        response_tokens += retry_response_tokens
+      end
       duration_ms = elapsed_ms(start_time)
 
       log.update!(
@@ -124,7 +131,7 @@ class GeminiService
             maxOutputTokens: ai_template.max_output_tokens,
             temperature:     ai_template.temperature.to_f,
             thinkingConfig:  { thinkingBudget: 0 }
-          }
+          }.merge(json_response_type(ai_template))
         }
       end
     end
@@ -143,6 +150,18 @@ class GeminiService
     response_tokens = billed_output_tokens(body) || estimate_tokens(text)
 
     [text, prompt_tokens, response_tokens]
+  end
+
+  # JSON mode, as in open-base. Without it the plan sometimes came back missing the
+  # closing "]" of phases, which no prompt wording fixed reliably.
+  def json_response_type(ai_template)
+    return {} unless AiGuardConfig.for_template(ai_template.name)[:format] == "json"
+
+    { responseMimeType: "application/json" }
+  end
+
+  def unparseable_json?(ai_template, text)
+    AiGuardConfig.for_template(ai_template.name)[:format] == "json" && AiOutputGuard.extract_json(text).nil?
   end
 
   def estimate_tokens(text)

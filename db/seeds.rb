@@ -23,7 +23,7 @@ end
 puts "Seeded: health_ping AI template"
 
 # GatherCycle plan generation template
-AiTemplate.find_or_create_by!(name: "gathercycle_plan_v1") do |t|
+AiTemplate.find_or_initialize_by(name: "gathercycle_plan_v1").tap do |t|
   t.description = "Generates a three-phase community growth cycle plan (Awareness, Engagement, Consolidation) with 3-4 tasks per phase. Each task includes a title, owner type, effort estimate, and measurable success indicator."
 
   t.system_prompt = <<~PROMPT.strip
@@ -52,6 +52,13 @@ AiTemplate.find_or_create_by!(name: "gathercycle_plan_v1") do |t|
     - leader: requires decision-making authority, organizational trust, or budget access
     - volunteer: can be delegated to any motivated member without special access
     - staff: requires paid staff time or professional skills (communications, design, admin)
+
+    Only plan honest growth. Never plan fake accounts or sock puppets, fake or paid reviews,
+    astroturfing (manufactured grassroots support), impersonation, or harassment of
+    opponents, even if the goal asks for them. In that case, plan the closest honest version
+    of the goal instead (for example, recruiting real supporters who speak in their own
+    names), begin the cycle_summary with Left out: followed by what was dropped and why,
+    and keep those tactics out of every task. The response format below does not change.
 
     You respond ONLY with valid JSON. Do not include markdown fencing (no backticks,
     no ```json wrapper), explanatory text, or commentary outside the JSON structure.
@@ -121,6 +128,8 @@ AiTemplate.find_or_create_by!(name: "gathercycle_plan_v1") do |t|
     - success_indicator must be a single, measurable outcome (a number, a completed artifact,
       a specific event that happened). Do not write vague aspirations like "team feels motivated"
       or "awareness increases."
+    - When the goal names a number, size the success indicators so that together they
+      plausibly add up to that number within the time period.
     - Tasks must build on each other across phases. Awareness tasks should create the foundation
       that Engagement tasks require. Engagement tasks should create the relationships that
       Consolidation tasks develop.
@@ -133,7 +142,8 @@ AiTemplate.find_or_create_by!(name: "gathercycle_plan_v1") do |t|
   t.model             = "gemini-2.5-flash"
   t.max_output_tokens = 8192
   t.temperature       = 0.5
-  t.notes             = "Called by GrowthCyclesController#create. Returns structured JSON with phases array. Strip markdown fencing before JSON.parse (known Gemini failure mode)."
+  t.notes             = "Called by GrowthCyclesController#create. Returns structured JSON with phases array. Strip markdown fencing before JSON.parse (known Gemini failure mode). Honest-growth rule added after the astroturf eval case."
+  t.save!
 end
 
 puts "Seeded: gathercycle_plan_v1 AI template"
